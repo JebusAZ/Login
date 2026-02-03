@@ -1,33 +1,13 @@
 package com.example.login
 
 import android.os.Bundle
-
 import android.widget.Toast
-
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,10 +19,38 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LoginTheme{
-                // A surface container using the 'background' color from the theme
-                Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                    LoginScreen()
+            LoginTheme {
+                // --- ESTADOS DE NAVEGACIÓN ---
+                // 1. ¿Está el usuario dentro de la app?
+                var isLoggedIn by remember { mutableStateOf(false) }
+                // 2. ¿Qué producto seleccionó para ver el detalle? (null = ninguno)
+                var selectedProduct by remember { mutableStateOf<Product?>(null) }
+
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    when {
+                        // CASO 1: No está logueado -> Mostrar Login
+                        !isLoggedIn -> {
+                            LoginScreen(onLoginSuccess = { isLoggedIn = true })
+                        }
+
+                        // CASO 2: Hay un producto seleccionado -> Mostrar Detalle
+                        selectedProduct != null -> {
+                            ProductDetailScreen(
+                                product = selectedProduct!!,
+                                onBack = { selectedProduct = null }
+                            )
+                        }
+
+                        // CASO 3: Está logueado pero no hay selección -> Mostrar Lista
+                        else -> {
+                            DeliveryScreen(onProductClick = { producto ->
+                                selectedProduct = producto
+                            })
+                        }
+                    }
                 }
             }
         }
@@ -50,7 +58,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -62,15 +70,11 @@ fun LoginScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Iniciar sesión", style = MaterialTheme.typography.headlineMedium)
-
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = username,
-            // ⭐️ CORRECCIÓN: 'it' es el nuevo valor del texto (String).
-            onValueChange = { newValue ->
-                username = newValue
-            },
+            onValueChange = { username = it },
             label = { Text("Usuario / Correo Electronico") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -80,10 +84,7 @@ fun LoginScreen() {
 
         OutlinedTextField(
             value = password,
-            // ⭐️ CORRECCIÓN: 'it' es el nuevo valor del texto (String).
-            onValueChange = { newValue ->
-                password = newValue
-            },
+            onValueChange = { password = it },
             label = { Text("Contraseña") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
@@ -97,6 +98,7 @@ fun LoginScreen() {
             onClick = {
                 if (username == "admin" && password == "1234") {
                     Toast.makeText(context, "Login exitoso", Toast.LENGTH_SHORT).show()
+                    onLoginSuccess()
                 } else {
                     Toast.makeText(context, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
                 }

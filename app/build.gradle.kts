@@ -78,4 +78,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 
+    //Integración de Picasso
+    implementation("com.squareup.picasso:picasso:2.8")
+
 }
