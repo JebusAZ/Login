@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -75,10 +76,22 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
     // Para compatibilidad con View y WindowInsets
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
 
     //Integración de Picasso
     implementation("com.squareup.picasso:picasso:2.8")
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
+
+    //Firebase Authentication Services
+    implementation("com.google.firebase:firebase-auth")
+
+    //Firebase Storage
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+
+
 
 }

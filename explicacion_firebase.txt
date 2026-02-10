@@ -1,0 +1,89 @@
+## Explicación de la Integración de Firebase en el Proyecto de Login
+
+Este documento detalla los pasos que se siguieron para integrar los servicios de Autenticación y Almacenamiento (Storage) de Firebase en tu aplicación de Android.
+
+### 1. Configuración de Dependencias de Firebase
+
+El primer paso fue añadir las dependencias necesarias de Firebase a tu proyecto. Esto se hizo en dos partes:
+
+**a) Archivo `build.gradle.kts` del Módulo `app`:**
+
+Se agregaron las siguientes líneas al final de la sección de dependencias:
+
+```groovy
+// Firebase
+implementation(platform("com.google.firebase:firebase-bom:33.1.0")) // Bill of Materials para gestionar versiones
+implementation("com.google.firebase:firebase-auth-ktx")        // Autenticación de Firebase
+implementation("com.google.firebase:firebase-storage-ktx")    // Almacenamiento de Firebase
+```
+
+También se aplicó el plugin de `google-services` al principio del archivo:
+
+```groovy
+plugins {
+    // ... otros plugins
+    id("com.google.gms.google-services")
+}
+```
+
+**b) Archivo `build.gradle.kts` del Proyecto (raíz):
+**
+
+Se añadió el plugin de `google-services` a nivel de proyecto para que Gradle pueda procesar el archivo `google-services.json` que añadiremos más adelante.
+
+```groovy
+plugins {
+    // ... otros plugins
+    id("com.google.gms.google-services") version "4.4.1" apply false
+}
+```
+
+### 2. Creación de Nuevas Pantallas con Jetpack Compose
+
+Para manejar la autenticación y el almacenamiento, se crearon dos nuevos archivos Kotlin con funciones Composable:
+
+**a) `AuthScreen.kt`:**
+
+*   Esta pantalla contiene campos de texto para el correo electrónico y la contraseña, y dos botones: "Registrarse" e "Iniciar Sesión".
+*   Utiliza `FirebaseAuth.getInstance()` para interactuar con el servicio de autenticación de Firebase.
+*   Llama a `createUserWithEmailAndPassword` para registrar nuevos usuarios y a `signInWithEmailAndPassword` para iniciar sesión con usuarios existentes.
+*   Muestra mensajes (`Toast`) para informar al usuario si las operaciones fueron exitosas o si ocurrieron errores.
+
+**b) `StorageScreen.kt`:**
+
+*   Esta pantalla demuestra cómo subir archivos a Firebase Storage.
+*   Incluye un botón para "Seleccionar Imagen" que abre el selector de archivos del dispositivo.
+*   Una vez seleccionada una imagen, aparece el botón "Subir Imagen".
+*   Al presionar "Subir Imagen", se genera un nombre de archivo único (`UUID`) y se sube la imagen a una carpeta `images/` en tu bucket de Firebase Storage.
+*   También utiliza `Toast` para notificar el resultado de la subida.
+
+### 3. Modificación de `MainActivity.kt`
+
+La `MainActivity` fue actualizada para reflejar la nueva lógica de autenticación:
+
+*   Se eliminó la antigua `LoginScreen` local.
+*   Se utiliza `FirebaseAuth.getInstance().currentUser != null` para comprobar si el usuario ya ha iniciado sesión cuando se abre la aplicación.
+*   Si el usuario ha iniciado sesión (`isLoggedIn` es `true`), se muestra la `StorageScreen`.
+*   Si no ha iniciado sesión (`isLoggedIn` es `false`), se muestra la `AuthScreen`.
+*   La `AuthScreen` recibe una función `onLoginSuccess` que actualiza el estado `isLoggedIn` a `true` cuando el registro o el inicio de sesión son exitosos, provocando que la interfaz cambie a la `StorageScreen`.
+
+### Próximos Pasos para Ti
+
+1.  **Añadir `google-services.json`:** Como se mencionó anteriormente, debes descargar tu archivo `google-services.json` desde la Consola de Firebase y colocarlo en el directorio `app` de tu proyecto (`C:/Users/jesus/AndroidStudioProjects/Login/app/`).
+
+2.  **Habilitar Autenticación en Firebase:** En la Consola de Firebase, ve a la sección de "Authentication", haz clic en "Sign-in method" y habilita el proveedor de "Email/Password".
+
+3.  **Configurar Reglas de Storage:** Ve a la sección de "Storage" en la Consola de Firebase. En la pestaña "Rules", es posible que necesites ajustar las reglas de seguridad para permitir la lectura y escritura. Para empezar, puedes usar las reglas de desarrollo que permiten el acceso a usuarios autenticados:
+
+    ```
+    rules_version = '2';
+    service firebase.storage {
+      match /b/{bucket}/o {
+        match /{allPaths=**} {
+          allow read, write: if request.auth != null;
+        }
+      }
+    }
+    ```
+
+Una vez completados estos pasos, podrás ejecutar la aplicación, registrar usuarios, iniciar sesión y subir imágenes a Firebase.

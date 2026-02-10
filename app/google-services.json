@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "817029774908",
+    "project_id": "fir-android-585cb",
+    "storage_bucket": "fir-android-585cb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817029774908:android:bef34741e2493e8b534d39",
+        "android_client_info": {
+          "package_name": "com.example.login"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGAE_DlWePyxx9w5kMd8m6w8qCgZBiXvU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
