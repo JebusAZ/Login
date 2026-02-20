@@ -60,38 +60,15 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    // Jetpack Compose BOM (Bill of Materials)
-    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
-
-    // Compose UI y Material 3
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-
-    // Activity para Compose
-    implementation("androidx.activity:activity-compose:1.9.0")
-
-    // Accompanist System UI Controller (opcional, para status bar)
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
 
-    // Para compatibilidad con View y WindowInsets
-    implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
-
-    //Integración de Picasso
     implementation("com.squareup.picasso:picasso:2.8")
 
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.9.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
 
-    //Firebase Authentication Services
-    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
 
-    //Firebase Storage
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-storage")
-
-
-
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
 }

@@ -48,7 +48,7 @@ fun StorageScreen() {
         imageUri?.let {
             Button(onClick = {
                 val filename = "${UUID.randomUUID()}"
-                val uploadRef = storageRef.child("images/$filename")
+                val uploadRef = storageRef.child("image/$filename")
                 uploadRef.putFile(it)
                     .addOnSuccessListener {
                         Toast.makeText(context, "Imagen subida con éxito", Toast.LENGTH_SHORT).show()
